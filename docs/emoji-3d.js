@@ -2,13 +2,17 @@
 (() => {
   const emojiPattern = /\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?(?:\u{1F3FB}-\u{1F3FF})?(?:\u200D\p{Extended_Pictographic}(?:\uFE0F)?(?:\u{1F3FB}-\u{1F3FF})?)*(?:\u{1F1E6}-\u{1F1FF}){0,2}/gu;
   const skip = new Set(["SCRIPT","STYLE","TEXTAREA","INPUT","OPTION","CODE","PRE","NOSCRIPT"]);
+  function hasEmoji(value) {
+    emojiPattern.lastIndex = 0;
+    return emojiPattern.test(value);
+  }
   function decorate(root) {
-    if (!root) return;
+    if (!root || root.nodeType !== Node.ELEMENT_NODE) return;
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
         const p = node.parentElement;
         if (!p || skip.has(p.tagName) || p.closest(".emoji-3d,[contenteditable='true']")) return NodeFilter.FILTER_REJECT;
-        return emojiPattern.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        return hasEmoji(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
       }
     });
     const nodes = [];
