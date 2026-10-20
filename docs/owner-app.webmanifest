@@ -1,0 +1,21 @@
+{
+  "id": "./admin.html",
+  "name": "eCuisine Foods Owner",
+  "short_name": "eCuisine Owner",
+  "description": "Manage eCuisine Foods orders, products, affiliates and business performance.",
+  "start_url": "./admin.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f3f5f0",
+  "theme_color": "#153d2d",
+  "categories": ["business", "productivity", "shopping"],
+  "icons": [
+    {
+      "src": "./owner-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
