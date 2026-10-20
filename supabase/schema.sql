@@ -1,0 +1,11 @@
+-- eCuisine Foods. Products are public-read; orders are not publicly accessible.
+create extension if not exists pgcrypto;
+create table if not exists public.products(id uuid primary key default gen_random_uuid(),slug text not null unique,name text not null,size_label text,description text,price_ngn numeric(12,2) check(price_ngn is null or price_ngn>=0),image_url text,is_active boolean not null default true,created_at timestamptz not null default now());
+alter table public.products enable row level security;
+drop policy if exists "Public can read active products" on public.products;
+create policy "Public can read active products" on public.products for select to anon,authenticated using(is_active=true);
+grant select on public.products to anon,authenticated;
+insert into public.products(slug,name,size_label,description,price_ngn) values('tombrown-cereal-500g','Tombrown Cereal','500 g','A comforting cereal staple for your morning routine.',null),('tombrown-cereal-1kg','Tombrown Cereal','1 kg','More of the nourishing pantry staple you love.',null),('peanut-butter','Peanut Butter',null,'A rich, creamy favourite for toast, snacks and more.',null) on conflict(slug) do nothing;
+create table if not exists public.orders(id uuid primary key default gen_random_uuid(),order_reference text not null unique default('EC-'||upper(substr(replace(gen_random_uuid()::text,'-',''),1,10))),customer_name text,customer_phone text,delivery_area text,delivery_address text,items jsonb not null,subtotal_ngn numeric(12,2) check(subtotal_ngn is null or subtotal_ngn>=0),delivery_fee_ngn numeric(12,2) check(delivery_fee_ngn is null or delivery_fee_ngn>=0),status text not null default 'pending' check(status in('pending','confirmed','preparing','out_for_delivery','delivered','cancelled')),checkout_channel text not null default 'whatsapp' check(checkout_channel in('whatsapp','manual')),created_at timestamptz not null default now());
+alter table public.orders enable row level security;
+revoke all on public.orders from anon,authenticated;
