@@ -1,0 +1,105 @@
+name: Build and publish eCuisine Foods Android APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mobile-app/**"
+      - ".github/workflows/android-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Capacitor dependencies
+        working-directory: mobile-app
+        run: npm install
+
+      - name: Generate Android project and build APK
+        working-directory: mobile-app
+        run: |
+          mkdir -p web
+          printf '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><p>Connecting to eCuisine Foods…</p></body></html>' > web/index.html
+          npx cap add android
+          npx cap sync android
+          cd android
+          ./gradlew --no-daemon assembleDebug
+
+      - name: Verify APK exists and is non-empty
+        run: |
+          test -s mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
+          mkdir -p docs/downloads
+          cp mobile-app/android/app/build/outputs/apk/debug/app-debug.apk docs/downloads/ecuisine-foods.apk
+          sha256sum docs/downloads/ecuisine-foods.apk | tee docs/downloads/ecuisine-foods.apk.sha256
+          cat > docs/downloads/index.html <<'EOF'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="theme-color" content="#183c2d">
+            <title>Download eCuisine Foods for Android</title>
+            <style>
+              :root{color-scheme:light;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f7f4eb;color:#183c2d}
+              body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box}
+              main{width:min(100%,560px);box-sizing:border-box;background:white;border:1px solid #e6e1d4;border-radius:24px;padding:clamp(24px,6vw,44px);box-shadow:0 18px 50px #183c2d12}
+              .mark{display:grid;place-items:center;width:56px;height:56px;border-radius:18px;background:#183c2d;color:#fff;font-weight:800;font-size:24px}
+              h1{font-size:clamp(28px,7vw,40px);line-height:1.1;margin:24px 0 12px}
+              p{line-height:1.65;color:#56665b}
+              a.button{display:block;text-align:center;background:#183c2d;color:#fff;text-decoration:none;font-weight:700;padding:16px;border-radius:14px;margin:24px 0}
+              small{color:#68756c}
+              li{margin:8px 0}
+            </style>
+          </head>
+          <body><main>
+            <div class="mark">ec</div>
+            <h1>Good Food, Better Living.</h1>
+            <p>Get eCuisine Foods on your Android phone. Shop our pantry favourites, follow orders and access our connected customer and partner services.</p>
+            <a class="button" href="./ecuisine-foods.apk" download>Download Android APK</a>
+            <small>Direct APK install. Android may ask you to allow installation from your browser. Only install if you trust this source.</small>
+            <h2>What to know</h2>
+            <ul><li>Internet connection required.</li><li>Uses the existing eCuisine Foods website and account system.</li><li>For safety, install updates from this official download page.</li></ul>
+            <p><a href="../">Visit eCuisine Foods website</a></p>
+          </main></body></html>
+          EOF
+
+      - name: Upload APK as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecuisine-foods-android-apk
+          path: mobile-app/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish APK download to GitHub Pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/downloads/index.html docs/downloads/ecuisine-foods.apk docs/downloads/ecuisine-foods.apk.sha256
+          if git diff --cached --quiet; then
+            echo "No APK download changes to publish."
+          else
+            git commit -m "Publish eCuisine Foods Android APK"
+            git push origin HEAD:main
+          fi
