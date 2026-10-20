@@ -1,0 +1,46 @@
+name: Build and publish modern dashboard
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "modern-app/**"
+      - ".github/workflows/modern-app-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: modern-app
+        run: npm install
+      - name: Build dashboard
+        working-directory: modern-app
+        run: npm run build
+      - name: Publish built files into GitHub Pages directory
+        run: |
+          mkdir -p docs/modern
+          cp -R modern-app/dist/. docs/modern/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/modern
+          if git diff --cached --quiet; then
+            echo "No published asset changes."
+          else
+            git commit -m "Deploy modern owner dashboard"
+            git push origin HEAD:main
+          fi
