@@ -1,1 +1,53 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Join eCuisine Foods</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><header><a class="brand" href="index.html">eCuisine <small>FOODS</small></a><nav><a href="sign-in.html">Sign in</a><a href="index.html">Store</a></nav></header><main class="account-main"><section class="account-card"><p class="eyebrow">JOIN THE FAMILY</p><h1>Create your <em>account.</em></h1><p>Register below, then confirm your email before signing in.</p><form id="f" class="account-form"><label>Full name</label><input id="n" required maxlength="100" autocomplete="name"><label>Email</label><input id="e" type="email" required autocomplete="email"><label>Phone</label><input id="p" type="tel" required autocomplete="tel"><label>Password (10+ characters)</label><input id="pw" type="password" required minlength="10" autocomplete="new-password"><button class="btn dark">Create account</button></form><p id="msg" role="status"></p><p>Already registered? <a href="sign-in.html">Sign in</a></p></section></main><script>const sb=window.supabase.createClient("https://zsepwkequzwwuxtrpmmy.supabase.co","sb_publishable_iTpErW44DA3l6Sz22MSgAw_fQ4xaQKC");const msg=s=>document.querySelector("#msg").textContent=s;document.querySelector("#f").onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector("button");b.disabled=true;msg("Creating account…");try{const {data,error}=await sb.auth.signUp({email:document.querySelector("#e").value.trim().toLowerCase(),password:document.querySelector("#pw").value,options:{data:{full_name:document.querySelector("#n").value.trim(),phone:document.querySelector("#p").value.trim()},emailRedirectTo:location.origin+location.pathname.replace("sign-up.html","sign-in.html")}});if(error)throw error;msg("Account request received. Check your inbox for an email confirmation link, then sign in.")}catch(x){msg(x.message||"Could not register. Please try again.")}finally{b.disabled=false}};</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Create an account | eCuisine Foods</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header><a class="brand" href="index.html">eCuisine <small>FOODS</small></a><nav><a href="sign-in.html">Sign in</a><a href="index.html">Store</a></nav></header>
+<main class="account-main"><section class="account-card">
+<p class="eyebrow">JOIN THE FAMILY</p><h1>Create your <em>account.</em></h1>
+<p>Just enter your name, email and a password. We’ll email you a confirmation link to activate your account.</p>
+<form id="signup" class="account-form">
+<label for="name">Full name</label><input id="name" name="name" required maxlength="100" autocomplete="name">
+<label for="email">Email address</label><input id="email" name="email" type="email" required autocomplete="email">
+<label for="password">Create password</label><input id="password" name="password" type="password" required minlength="10" autocomplete="new-password" aria-describedby="pw-help">
+<small id="pw-help">Use at least 10 characters.</small>
+<button id="create" class="btn dark" type="submit">Create my account</button>
+</form>
+<p id="msg" role="status" aria-live="polite"></p>
+<form id="resend" class="account-form" hidden>
+<button id="resendBtn" class="btn light" type="submit">Resend confirmation email</button>
+</form>
+<p>Already have an account? <a href="sign-in.html">Sign in</a></p>
+</section></main>
+<script>
+const sb=window.supabase.createClient("https://zsepwkequzwwuxtrpmmy.supabase.co","sb_publishable_iTpErW44DA3l6Sz22MSgAw_fQ4xaQKC");
+const $=id=>document.getElementById(id);
+const msg=s=>{$("msg").textContent=s};
+const redirectTo="https://dubemascend-png.github.io/ecuisine-foods-online-store/sign-in.html";
+$("signup").addEventListener("submit",async e=>{
+ e.preventDefault(); const button=$("create"); button.disabled=true; $("resend").hidden=true; msg("Creating your account…");
+ const email=$("email").value.trim().toLowerCase();
+ try{
+  const {error}=await sb.auth.signUp({email,password:$("password").value,options:{data:{full_name:$("name").value.trim()},emailRedirectTo:redirectTo}});
+  if(error) throw error;
+  msg("If this email can be registered, we’ve sent a confirmation link. Open the email and tap Confirm, then return here to sign in. Check Spam/Junk too.");
+  $("resend").hidden=false;
+ }catch(err){msg(err.message||"We couldn’t create the account. Please try again.");}
+ finally{button.disabled=false}
+});
+$("resend").addEventListener("submit",async e=>{
+ e.preventDefault();const button=$("resendBtn");button.disabled=true;msg("Sending confirmation email…");
+ try{
+  const {error}=await sb.auth.resend({type:"signup",email:$("email").value.trim().toLowerCase(),options:{emailRedirectTo:redirectTo}});
+  if(error)throw error;
+  msg("If the account is awaiting confirmation, a new confirmation email has been requested. Check Inbox and Spam/Junk.");
+ }catch(err){msg(err.message||"We couldn’t resend the email. Please try again in a moment.");}
+ finally{button.disabled=false}
+});
+</script>
+</body></html>
