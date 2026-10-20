@@ -1,0 +1,15 @@
+{
+  "id": "/ecuisine-foods-online-store/modern/",
+  "name": "eCuisine Foods Owner",
+  "short_name": "eCuisine Owner",
+  "description": "Manage eCuisine Foods orders, customers, affiliates and cash flow.",
+  "start_url": "/ecuisine-foods-online-store/modern/",
+  "scope": "/ecuisine-foods-online-store/modern/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f3e9",
+  "theme_color": "#153d2d",
+  "icons": [
+    { "src": "owner-app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
