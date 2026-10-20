@@ -401,3 +401,12 @@ header nav{gap:clamp(10px,1.7vw,24px)}header nav a{white-space:nowrap}
  .page-shop .section-head,.page-categories .section-head{padding-top:16px}
 }
 @media(prefers-reduced-motion:reduce){.main-nav *{animation:none!important;transition:none!important}}
+
+/* Keep the shop title hierarchy clean while decorating its existing eyebrow */
+.page-shop .section-head,.page-categories .section-head{display:flex;align-items:flex-end;gap:24px}
+.page-shop .section-head:before,.page-categories .section-head:before{display:none}
+.page-shop .section-head>div,.page-categories .section-head>div{min-width:0}
+.page-shop .section-head .eyebrow,.page-categories .section-head .eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid #e0e6d9;border-radius:999px;background:#f7f8f1;padding:6px 10px;margin:0 0 9px;color:#8b702e;font-size:.58rem;letter-spacing:.14em}
+.page-shop .section-head .eyebrow:before,.page-categories .section-head .eyebrow:before{content:"";width:6px;height:6px;border-radius:50%;background:#c99b45}
+.page-shop .section-head>p,.page-categories .section-head>p{max-width:300px;margin:0 0 3px}
+@media(max-width:620px){.page-shop .section-head,.page-categories .section-head{display:block}.page-shop .section-head>p,.page-categories .section-head>p{margin-top:14px}}
