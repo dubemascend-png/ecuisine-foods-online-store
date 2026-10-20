@@ -549,3 +549,6 @@ header{width:100%;padding:0 max(var(--site-gutter),calc((100vw - var(--site-widt
  .home-trustbar{grid-template-columns:1fr;gap:17px}
 }
 @media(prefers-reduced-motion:reduce){.step-card,.product,.product-bottom button{transition:none!important}}
+
+/* Social links in the site footer */
+.social-links{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.social-links strong{font-size:.78rem;color:var(--g)}.social-links a{display:inline-flex;align-items:center;gap:5px;padding:8px 11px;border:1px solid var(--line);border-radius:999px;color:var(--g);text-decoration:none;font-size:.76rem;font-weight:700;transition:background .2s,border-color .2s}.social-links a:hover{background:var(--cream);border-color:var(--gold);color:var(--g)}@media(max-width:620px){.social-links{width:100%;gap:8px}.social-links strong{width:100%}.social-links a{padding:8px 10px}}
