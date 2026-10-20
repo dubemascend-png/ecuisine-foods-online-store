@@ -22,7 +22,7 @@ body>header nav{font-size:.83rem;color:#dce9de}body>header nav a{color:#fff;text
 @media(max-width:640px){body>header{align-items:flex-start;flex-direction:column}.chat-wrap{margin:16px auto;padding:0 10px 30px}.chat-card{border-radius:18px;padding:16px}.chat-grid{grid-template-columns:1fr}.chat-list{display:flex;flex-direction:row;overflow:auto;min-height:0}.thread{min-width:170px;width:auto}.chat-messages{height:46vh;min-height:260px;padding:12px}.bubble{max-width:92%}.sendrow button{min-width:76px}}
 </style></head><body><header><a class="brand" href="index.html"><span class="brand-mark">eC</span><span>eCuisine<small>FOODS · PARTNER CARE</small></span></a><nav><a href="affiliate.html">Affiliate dashboard</a> · <a href="admin.html">Admin dashboard</a></nav></header><main class="chat-wrap"><section class="chat-card"><div class="chat-brandline"><span class="chat-brandseal">eC</span><span><strong>eCuisine Foods</strong><small>Official Affiliate Support</small></span></div><p class="eyebrow">PARTNER CARE · PRIVATE MESSAGES</p><h1>Let’s talk. We’re here to help.</h1><p id="status" role="status">Checking your account…</p><div class="chat-grid"><aside><h2 id="listTitle">Conversations</h2><div id="threads" class="chat-list"></div></aside><section><h2 id="threadTitle">Choose a conversation</h2><div id="messages" class="chat-messages" aria-live="polite"></div><form id="sendForm" class="sendrow"><textarea id="message" maxlength="2000" required placeholder="Write a message…"></textarea><button id="send" type="submit">Send</button></form><button id="refresh" class="secondary" type="button" style="margin-top:10px">Refresh messages</button></section></div></section></main>
 <script>
-(()=>{const U="https://zsepwkequzwwuxtrpmmy.supabase.co",K="sb_publishable_iTpErW44DA3l6Sz22MSgAw_fQ4xaQKC",sb=supabase.createClient(U,K,{auth:{persistSession:true,autoRefreshToken:true}}),$=id=>document.getElementById(id);let session=null,isAdmin=false,threads=[],active=null,chatVisible=true;
+(()=>{const U="https://zsepwkequzwwuxtrpmmy.supabase.co",K="sb_publishable_iTpErW44DA3l6Sz22MSgAw_fQ4xaQKC",sb=supabase.createClient(U,K,{auth:{persistSession:true,autoRefreshToken:true}}),$=id=>document.getElementById(id);let session=null,isAdmin=false,threads=[],active=null,chatVisible=true,liveChannel=null,lastMessageIds=new Set(),refreshing=false;
 async function api(body){const r=await fetch(U+"/functions/v1/ecuisine-chat",{method:"POST",headers:{"Content-Type":"application/json","apikey":K,"Authorization":"Bearer "+session.access_token},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw Error(d.error||"Chat request failed");return d}
 function say(t){$("status").textContent=t}
 function makeThreadButton(t){
@@ -32,12 +32,30 @@ function makeThreadButton(t){
  b.append(name,unread);b.addEventListener("click",()=>openThread(t.affiliate_id,t.display_name).catch(e=>say(e.message)));return b;
 }
 async function loadThreads(){const d=await api({action:"threads"});threads=d.threads||[];$("threads").replaceChildren();threads.forEach(t=>$("threads").appendChild(makeThreadButton(t)));if(!threads.length)say(isAdmin?"No affiliate conversations yet.":"Your support conversation is ready.");if(!active&&threads.length)await openThread(threads[0].affiliate_id,threads[0].display_name)}
-async function openThread(id,name){active=id;$("threadTitle").textContent=name||"Affiliate conversation";document.querySelectorAll(".thread").forEach((b,i)=>b.classList.toggle("active",threads[i]?.affiliate_id===id));await loadMessages()}
+async function openThread(id,name){active=id;$("threadTitle").textContent=name||"Affiliate conversation";document.querySelectorAll(".thread").forEach((b,i)=>b.classList.toggle("active",threads[i]?.affiliate_id===id));await loadMessages();await joinLiveThread(id)}
+async function joinLiveThread(id){
+ if(liveChannel){try{await sb.removeChannel(liveChannel)}catch(e){}liveChannel=null}
+ liveChannel=sb.channel("ecuisine-chat-"+id);
+ liveChannel.on("broadcast",{event:"new-message"},async payload=>{
+   const msg=payload?.payload||{};
+   if(msg.sender_user_id===session?.user?.id)return;
+   try{await loadMessages();await loadThreads()}catch(e){}
+   say("New message received.");
+   const notice={type:"ecuisine-chat-new-message",senderRole:msg.sender_role||"unknown",message:String(msg.message||"New support message").slice(0,120)};
+   try{window.parent.postMessage(notice,"*")}catch(e){}
+   if("Notification"in window&&Notification.permission==="granted"&&document.hidden){try{new Notification("eCuisine Foods",{body:notice.message,tag:"ecuisine-chat-"+id})}catch(e){}}
+ });
+ liveChannel.subscribe(status=>{if(status==="SUBSCRIBED")say("Live chat connected.");else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT")say("Reconnecting to live chat…");});
+}
+async function broadcastMessage(message){
+ if(!liveChannel)return;
+ try{await liveChannel.send({type:"broadcast",event:"new-message",payload:{sender_user_id:session.user.id,sender_role:isAdmin?"admin":"affiliate",message:String(message||"").slice(0,120)}})}catch(e){}
+}
 async function loadMessages(){if(!active)return;const d=await api({action:"messages",affiliate_id:active});const box=$("messages");box.replaceChildren();(d.messages||[]).forEach(m=>{const b=document.createElement("div");b.className="bubble"+(m.sender_user_id===session.user.id?" mine":"");b.textContent=m.message;const small=document.createElement("small");small.textContent=(m.sender_role==="admin"?"eCuisine Admin":"Affiliate")+" · "+new Date(m.created_at).toLocaleString();b.appendChild(small);box.appendChild(b)});box.scrollTop=box.scrollHeight}
-$("sendForm").addEventListener("submit",async e=>{e.preventDefault();const text=$("message").value.trim();if(!text||!active)return;$("send").disabled=true;try{await api({action:"send",affiliate_id:active,message:text});$("message").value="";await loadMessages();say("Message sent.")}catch(err){say(err.message)}finally{$("send").disabled=false}});
+$("sendForm").addEventListener("submit",async e=>{e.preventDefault();const text=$("message").value.trim();if(!text||!active)return;$("send").disabled=true;try{await api({action:"send",affiliate_id:active,message:text});$("message").value="";await loadMessages();await broadcastMessage(text);say("Message sent.")}catch(err){say(err.message)}finally{$("send").disabled=false}});
 $("refresh").onclick=async()=>{try{await loadThreads();if(active)await loadMessages();say("Chat refreshed.")}catch(e){say(e.message)}};
 (async()=>{const {data,error}=await sb.auth.getSession();session=data.session;if(error||!session){say("Please sign in first, then reopen chat.");return}try{const d=await api({action:"threads"});threads=d.threads||[];isAdmin=!!d.is_admin;$("listTitle").textContent=isAdmin?"Affiliate conversations":"Your support chat";$("threads").replaceChildren();threads.forEach(t=>$("threads").appendChild(makeThreadButton(t)));if(!isAdmin&&threads.length===0){say("Your account is not registered as an affiliate or an authorised support admin.");return}if(threads.length)await openThread(threads[0].affiliate_id,threads[0].display_name);say("Chat ready. New messages refresh automatically.")}catch(e){say(e.message)}})();
 window.addEventListener("message",e=>{if(e.data&&e.data.type==="ecuisine-chat-visible")chatVisible=!!e.data.visible});
-setInterval(async()=>{if(!session||!chatVisible)return;try{await loadThreads();if(active)await loadMessages()}catch(e){say(e.message)}},8000);
+setInterval(async()=>{if(!session||!chatVisible||refreshing)return;refreshing=true;try{if(!liveChannel||liveChannel.state!=="joined"){await loadThreads();if(active)await loadMessages()}}catch(e){}finally{refreshing=false}},30000);
 })();
 </script><script src="emoji-3d.js" defer></script></body></html>
