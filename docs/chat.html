@@ -41,7 +41,7 @@ async function joinLiveThread(id){
    if(msg.sender_user_id===session?.user?.id)return;
    try{await loadMessages();await loadThreads()}catch(e){}
    say("New message received.");
-   const notice={type:"ecuisine-chat-new-message",senderRole:msg.sender_role||"unknown",message:String(msg.message||"New support message").slice(0,120)};
+   const notice={type:"ecuisine-chat-new-message",senderRole:msg.sender_role||"unknown",message:"You have a new support message"};
    try{window.parent.postMessage(notice,"*")}catch(e){}
    if("Notification"in window&&Notification.permission==="granted"&&document.hidden){try{new Notification("eCuisine Foods",{body:notice.message,tag:"ecuisine-chat-"+id})}catch(e){}}
  });
@@ -49,7 +49,7 @@ async function joinLiveThread(id){
 }
 async function broadcastMessage(message){
  if(!liveChannel)return;
- try{await liveChannel.send({type:"broadcast",event:"new-message",payload:{sender_user_id:session.user.id,sender_role:isAdmin?"admin":"affiliate",message:String(message||"").slice(0,120)}})}catch(e){}
+ try{await liveChannel.send({type:"broadcast",event:"new-message",payload:{sender_user_id:session.user.id,sender_role:isAdmin?"admin":"affiliate",sent_at:new Date().toISOString()}})}catch(e){}
 }
 async function loadMessages(){if(!active)return;const d=await api({action:"messages",affiliate_id:active});const box=$("messages");box.replaceChildren();(d.messages||[]).forEach(m=>{const b=document.createElement("div");b.className="bubble"+(m.sender_user_id===session.user.id?" mine":"");b.textContent=m.message;const small=document.createElement("small");small.textContent=(m.sender_role==="admin"?"eCuisine Admin":"Affiliate")+" · "+new Date(m.created_at).toLocaleString();b.appendChild(small);box.appendChild(b)});box.scrollTop=box.scrollHeight}
 $("sendForm").addEventListener("submit",async e=>{e.preventDefault();const text=$("message").value.trim();if(!text||!active)return;$("send").disabled=true;try{await api({action:"send",affiliate_id:active,message:text});$("message").value="";await loadMessages();await broadcastMessage(text);say("Message sent.")}catch(err){say(err.message)}finally{$("send").disabled=false}});
