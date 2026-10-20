@@ -1,0 +1,7 @@
+:root[data-theme="dark"]{color-scheme:dark;--g:#b8d8c3;--cream:#202b24;--paper:#151c17;--gold:#e5bd67;--ink:#edf3ed;--muted:#b1bdb2;--line:#36443a}
+:root[data-theme="dark"] body{background:#151c17!important;color:#edf3ed!important}
+:root[data-theme="dark"] header,:root[data-theme="dark"] main,:root[data-theme="dark"] section,:root[data-theme="dark"] article,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .metric,:root[data-theme="dark"] .card,:root[data-theme="dark"] .product,:root[data-theme="dark"] .info,:root[data-theme="dark"] .faq-item,:root[data-theme="dark"] .modal-content{background-color:#202b24!important;color:#edf3ed!important;border-color:#36443a!important}
+:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,:root[data-theme="dark"] p,:root[data-theme="dark"] label,:root[data-theme="dark"] td,:root[data-theme="dark"] th,:root[data-theme="dark"] .muted,:root[data-theme="dark"] a:not(.dark):not(.btn){color:#edf3ed}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea{background:#151c17!important;color:#edf3ed!important;border-color:#46564a!important}
+:root[data-theme="dark"] .hero,:root[data-theme="dark"] .benefits,:root[data-theme="dark"] .wrap{background:#151c17!important}
+:root[data-theme="dark"] footer{background:#101611!important;color:#edf3ed!important}
