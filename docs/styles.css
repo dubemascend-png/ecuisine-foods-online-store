@@ -88,3 +88,23 @@ nav a:hover,footer>a:hover{color:#a7792e}
 .catalog-product-image{display:block;width:100%;height:300px;object-fit:cover}
 .catalog-product-art .pack strong{overflow-wrap:anywhere;word-break:break-word}
 @media(max-width:600px){.catalog-product-image{height:240px}.catalog-product-art,.catalog-product-art .product-art{min-height:240px}}
+
+/* Multi-page storefront navigation and page-specific layouts */
+header nav{gap:clamp(10px,1.7vw,24px)}header nav a{white-space:nowrap}
+.page-shop .hero,.page-shop .benefits,.page-shop .story,.page-shop .faq,.page-shop .tracking,.page-shop .closing{display:none}
+.page-shop main>.shop{padding-top:64px;padding-bottom:76px;min-height:60vh}
+.page-shop main>.shop .section-head h2{font-size:clamp(2.5rem,5vw,4rem)}
+.page-categories .hero,.page-categories .benefits,.page-categories .story,.page-categories .faq,.page-categories .tracking,.page-categories .closing{display:none}
+.page-categories main>.shop{padding-top:56px;padding-bottom:76px;min-height:60vh}
+.page-categories main>.shop .section-head h2{font-size:clamp(2.5rem,5vw,4rem)}
+.page-categories main>.shop .section-head>div:after{content:"Browse by category using the filters below.";display:block;color:var(--muted);margin-top:10px}
+.page-story .hero,.page-story .benefits,.page-story .shop,.page-story .faq,.page-story .tracking{display:none}
+.page-story main>.story{margin-top:0;min-height:65vh;padding-top:clamp(70px,10vw,130px);padding-bottom:clamp(70px,10vw,130px)}
+.page-story main>.closing{display:block}
+.page-tracking .hero,.page-tracking .benefits,.page-tracking .shop,.page-tracking .story,.page-tracking .faq,.page-tracking .closing{display:none}
+.page-tracking main>.tracking{display:block;max-width:900px;margin:0 auto;padding-top:75px;padding-bottom:90px;min-height:55vh}
+.page-help .hero,.page-help .benefits,.page-help .shop,.page-help .story,.page-help .tracking,.page-help .closing{display:none}
+.page-help main>.faq{display:block;max-width:900px;margin:0 auto;padding-top:70px;padding-bottom:90px;min-height:60vh}
+.page-home main>.shop,.page-home main>.story,.page-home main>.faq,.page-home main>.tracking{display:none}
+.page-home main>.hero{padding-bottom:68px}
+@media(max-width:760px){header{height:auto;min-height:72px;padding:12px 4%;flex-wrap:wrap;gap:12px}header nav{order:3;width:100%;overflow-x:auto;padding:4px 0 7px;gap:18px}header nav a{font-size:.84rem}.basket{margin-left:auto}.page-shop main>.shop,.page-categories main>.shop{padding-top:36px}}
