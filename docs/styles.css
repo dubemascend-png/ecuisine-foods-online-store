@@ -552,3 +552,11 @@ header{width:100%;padding:0 max(var(--site-gutter),calc((100vw - var(--site-widt
 
 /* Social links in the site footer */
 .social-links{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.social-links strong{font-size:.78rem;color:var(--g)}.social-links a{display:inline-flex;align-items:center;gap:5px;padding:8px 11px;border:1px solid var(--line);border-radius:999px;color:var(--g);text-decoration:none;font-size:.76rem;font-weight:700;transition:background .2s,border-color .2s}.social-links a:hover{background:var(--cream);border-color:var(--gold);color:var(--g)}@media(max-width:620px){.social-links{width:100%;gap:8px}.social-links strong{width:100%}.social-links a{padding:8px 10px}}
+
+/* eCuisine shared light/dark appearance */
+:root[data-theme="dark"]{color-scheme:dark;--g:#b8d8c3;--cream:#202b24;--paper:#151c17;--gold:#e5bd67;--ink:#edf3ed;--muted:#b1bdb2;--line:#36443a}
+:root[data-theme="dark"] body{background:var(--paper);color:var(--ink)}
+:root[data-theme="dark"] header,:root[data-theme="dark"] .product,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .metric,:root[data-theme="dark"] .card,:root[data-theme="dark"] .modal,:root[data-theme="dark"] .dropdown,:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea{background-color:#202b24;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,:root[data-theme="dark"] .brand,:root[data-theme="dark"] nav a{color:var(--ink)}
+:root[data-theme="dark"] .hero,:root[data-theme="dark"] .benefits,:root[data-theme="dark"] .product-art,:root[data-theme="dark"] .faq,:root[data-theme="dark"] section{border-color:var(--line)}
+:root[data-theme="dark"] footer{background:#101611;color:var(--ink)}
