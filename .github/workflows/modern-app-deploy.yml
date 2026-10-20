@@ -34,7 +34,6 @@ jobs:
       - name: Publish built files into GitHub Pages directory
         run: |
           mkdir -p docs/modern
-          cp -R modern-app/dist/. docs/modern/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/modern
