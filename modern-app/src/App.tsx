@@ -17,7 +17,6 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 });
 
 type Order = { id?: string; order_number?: string; status?: string; payment_status?: string; total_ngn?: number; subtotal_ngn?: number; delivery_fee_ngn?: number; created_at?: string; items?: unknown };
-type Analytics = Record<string, unknown>;
 type NavKey = "overview" | "orders" | "affiliates" | "cashflow";
 const navItems: { id: NavKey; label: string; icon: typeof BarChart3 }[] = [
   { id: "overview", label: "Overview", icon: BarChart3 },
@@ -37,7 +36,6 @@ export default function App() {
   const [loginError, setLoginError] = useState("");
   const [page, setPage] = useState<NavKey>("overview");
   const [orders, setOrders] = useState<Order[]>([]);
-  const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [affiliates, setAffiliates] = useState<Record<string, unknown>[]>([]);
   const [conversions, setConversions] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(false);
@@ -66,9 +64,8 @@ export default function App() {
   async function refresh() {
     setLoading(true); setLoadError("");
     try {
-      const [o, a, f] = await Promise.all([api({ action: "list" }), api({ action: "analytics" }), api({ action: "affiliates" })]);
+      const [o, f] = await Promise.all([api({ action: "list" }), api({ action: "affiliates" })]);
       setOrders(Array.isArray(o.orders) ? o.orders : []);
-      setAnalytics(a.analytics || null);
       setAffiliates(Array.isArray(f.affiliates) ? f.affiliates : []);
       setConversions(Array.isArray(f.conversions) ? f.conversions : []);
     } catch (error) {
@@ -84,7 +81,7 @@ export default function App() {
     if (error) setLoginError(error.message);
   }
 
-  async function signOut() { await supabase.auth.signOut(); setOrders([]); setAnalytics(null); }
+  async function signOut() { await supabase.auth.signOut(); setOrders([]); }
   const paidOrders = orders.filter(o => o.payment_status === "paid");
   const inflow = paidOrders.reduce((sum, o) => sum + orderTotal(o), 0);
   const paidConversions = conversions.filter(c => c.status === "paid");
@@ -101,7 +98,6 @@ export default function App() {
       return { month: date.toLocaleDateString("en-NG", { month: "short" }), sales };
     });
   }, [orders]);
-  const productStats = (analytics?.best_sellers ?? analytics?.bestSellers ?? []) as { name?: string; product_name?: string; units?: number; quantity?: number; sales?: number }[];
 
   if (checking) return <div className="grid min-h-screen place-items-center text-forest-800"><LoaderCircle className="animate-spin" /> Checking your secure session…</div>;
   if (!session) return <main className="grid min-h-screen place-items-center px-4 py-12"><div className="w-full max-w-md rounded-3xl border border-forest-100 bg-white p-8 shadow-soft sm:p-10"><Brand /><div className="mt-10"><p className="text-xs font-bold uppercase tracking-[.2em] text-gold-600">Owner workspace</p><h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-forest-900">Welcome back.</h1><p className="mt-2 text-sm leading-6 text-slate-500">Sign in with the authorised eCuisine store-owner account to access business information.</p></div><form className="mt-7 space-y-4" onSubmit={signIn}><label className="block text-sm font-semibold">Email address<input required type="email" autoComplete="username" value={email} onChange={e => setEmail(e.target.value)} className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 font-normal outline-none transition focus:border-forest-600" /></label><label className="block text-sm font-semibold">Password<input required type="password" autoComplete="current-password" value={password} onChange={e => setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 font-normal outline-none transition focus:border-forest-600" /></label>{loginError && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{loginError}</p>}<button className="w-full rounded-xl bg-forest-800 px-4 py-3.5 font-semibold text-white transition hover:bg-forest-700">Sign in securely</button></form><p className="mt-6 flex items-start gap-2 text-xs leading-5 text-slate-400"><ShieldCheck size={16} className="mt-0.5 shrink-0" /> Dashboard data is requested through the existing owner-authorised Supabase API.</p><a className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-forest-700" href="../admin.html">Open current dashboard <ExternalLink size={14} /></a></div></main>;
