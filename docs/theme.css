@@ -1,7 +1,19 @@
-:root[data-theme="dark"]{color-scheme:dark;--g:#b8d8c3;--cream:#202b24;--paper:#151c17;--gold:#e5bd67;--ink:#edf3ed;--muted:#b1bdb2;--line:#36443a}
-:root[data-theme="dark"] body{background:#151c17!important;color:#edf3ed!important}
-:root[data-theme="dark"] header,:root[data-theme="dark"] main,:root[data-theme="dark"] section,:root[data-theme="dark"] article,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .metric,:root[data-theme="dark"] .card,:root[data-theme="dark"] .product,:root[data-theme="dark"] .info,:root[data-theme="dark"] .faq-item,:root[data-theme="dark"] .modal-content{background-color:#202b24!important;color:#edf3ed!important;border-color:#36443a!important}
-:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,:root[data-theme="dark"] p,:root[data-theme="dark"] label,:root[data-theme="dark"] td,:root[data-theme="dark"] th,:root[data-theme="dark"] .muted,:root[data-theme="dark"] a:not(.dark):not(.btn){color:#edf3ed}
-:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea{background:#151c17!important;color:#edf3ed!important;border-color:#46564a!important}
-:root[data-theme="dark"] .hero,:root[data-theme="dark"] .benefits,:root[data-theme="dark"] .wrap{background:#151c17!important}
-:root[data-theme="dark"] footer{background:#101611!important;color:#edf3ed!important}
+:root[data-theme="dark"]{color-scheme:dark;--g:#b8d8c3;--cream:#202b24;--paper:#202b24;--gold:#f3cf77;--ink:#f5f7f5;--muted:#c3cec5;--line:#48594d}
+:root[data-theme="dark"] body{background:#111813!important;color:#f5f7f5!important}
+:root[data-theme="dark"] header{background:#101f16!important;color:#fff!important}
+:root[data-theme="dark"] main,:root[data-theme="dark"] section,:root[data-theme="dark"] article,:root[data-theme="dark"] .panel,:root[data-theme="dark"] .metric,:root[data-theme="dark"] .card,:root[data-theme="dark"] .product,:root[data-theme="dark"] .info,:root[data-theme="dark"] .faq-item,:root[data-theme="dark"] .modal-content,:root[data-theme="dark"] .msg{background-color:#202b24!important;color:#f5f7f5!important;border-color:#48594d!important}
+:root[data-theme="dark"] h1,:root[data-theme="dark"] h2,:root[data-theme="dark"] h3,:root[data-theme="dark"] h4,:root[data-theme="dark"] p,:root[data-theme="dark"] label,:root[data-theme="dark"] td,:root[data-theme="dark"] th,:root[data-theme="dark"] li,:root[data-theme="dark"] summary,:root[data-theme="dark"] .muted,:root[data-theme="dark"] small,:root[data-theme="dark"] span{color:#f0f4f0}
+:root[data-theme="dark"] .muted,:root[data-theme="dark"] small{color:#c3cec5!important}
+:root[data-theme="dark"] a:not(.btn){color:#a9d8ff!important}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea{background:#111813!important;color:#fff!important;border-color:#65796a!important}
+:root[data-theme="dark"] input::placeholder,:root[data-theme="dark"] textarea::placeholder{color:#b6c2b9!important;opacity:1}
+:root[data-theme="dark"] button:not(#ecuisine-theme-toggle){color:#fff}
+:root[data-theme="dark"] .btn,:root[data-theme="dark"] button.btn{background:#286746!important;color:#fff!important;border:1px solid #76a98a!important}
+:root[data-theme="dark"] .role-checks label{background:#17221a!important;border-color:#596b5e!important;color:#fff!important}
+:root[data-theme="dark"] .hero,:root[data-theme="dark"] .benefits,:root[data-theme="dark"] .wrap{background:#111813!important}
+:root[data-theme="dark"] footer{background:#0d130f!important;color:#f5f7f5!important}
+:root[data-theme="dark"] table,:root[data-theme="dark"] th,:root[data-theme="dark"] td{border-color:#48594d!important}
+:root[data-theme="dark"] .badge,:root[data-theme="dark"] .pill{background:#344b3a!important;color:#fff!important}
+#ecuisine-theme-toggle{color:var(--ink,#183d2d)!important}
+:root[data-theme="dark"] #ecuisine-theme-toggle{background:#f2f5f1!important;color:#14231a!important;border-color:#aab9ad!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
