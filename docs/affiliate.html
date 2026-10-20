@@ -52,7 +52,8 @@ body>header{box-shadow:0 4px 20px #183c2d08}
 @keyframes disabledBob{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-9px) rotate(2deg)}}
 @media(max-width:680px){.disabled-layout{grid-template-columns:1fr;gap:12px}.disabled-art{padding:6px 0}.disabled-face{width:150px;font-size:90px}.disabled-copy{text-align:center}.disabled-copy>p{margin-left:auto;margin-right:auto}.disabled-actions a{width:100%}.disabled-values{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}}
 @media(prefers-reduced-motion:reduce){.disabled-face{animation:none}}
-</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><link rel="stylesheet" href="emoji-3d.css">
+</head>
 <body><header><a class="brand" href="index.html"><span class="mark">e<span>c</span></span><span>eCuisine<small>FOODS</small></span></a><nav class="main-nav" aria-label="Main navigation">
   <a class="nav-home" href="index.html">Home</a>
   <details class="nav-dropdown nav-shop"><summary>Shop <span class="nav-chevron">⌄</span></summary><div class="nav-menu"><a href="shop.html"><span class="menu-icon">✳</span><span><b>Our shop</b><small>Explore pantry favourites</small></span></a><a href="categories.html"><span class="menu-icon">▦</span><span><b>Product categories</b><small>Find your kind of goodness</small></span></a></div></details>
@@ -115,4 +116,5 @@ $("partnerAppealForm").addEventListener("submit",e=>{e.preventDefault();const na
 $("partnerYear").textContent=new Date().getFullYear();
 let authLoadTimer=null;(async()=>{const {data:{session},error}=await sb.auth.getSession();if(error){say("Could not check your sign-in session: "+error.message);return;}view("partnerLoggedOut",!session);view("partnerRegister",false);view("partnerDashboard",false);if(session)await load();else showSessionHelp("No active sign-in session was found.")})();sb.auth.onAuthStateChange((event,session)=>{if(event==="INITIAL_SESSION")return;if(session){if(authLoadTimer)clearTimeout(authLoadTimer);authLoadTimer=setTimeout(()=>load(),80);}else{view("partnerLoggedOut",true);view("partnerRegister",false);view("partnerDashboard",false);say("You are signed out. Please sign in to open your affiliate dashboard.");}})
 
-}catch(bootError){const msg=document.getElementById("partnerMessage");if(msg)msg.textContent="The affiliate page could not start: "+(bootError?.message||String(bootError))+". Refresh the page or try another browser/network.";console.error("eCuisine affiliate startup error",bootError);}})();</script><script src="navigation.js"></script></body></html>
+}catch(bootError){const msg=document.getElementById("partnerMessage");if(msg)msg.textContent="The affiliate page could not start: "+(bootError?.message||String(bootError))+". Refresh the page or try another browser/network.";console.error("eCuisine affiliate startup error",bootError);}})();</script><script src="navigation.js"></script><script src="emoji-3d.js" defer></script>
+</body></html>
