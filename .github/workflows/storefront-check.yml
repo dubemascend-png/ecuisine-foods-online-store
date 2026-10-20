@@ -1,0 +1,27 @@
+name: Storefront JavaScript checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/app.js"
+      - "docs/admin.js"
+      - ".github/workflows/storefront-check.yml"
+  pull_request:
+    paths:
+      - "docs/app.js"
+      - "docs/admin.js"
+      - ".github/workflows/storefront-check.yml"
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check storefront and owner dashboard JavaScript syntax
+        run: |
+          node --check docs/app.js
+          node --check docs/admin.js
