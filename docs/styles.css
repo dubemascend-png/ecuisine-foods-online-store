@@ -410,3 +410,67 @@ header nav{gap:clamp(10px,1.7vw,24px)}header nav a{white-space:nowrap}
 .page-shop .section-head .eyebrow:before,.page-categories .section-head .eyebrow:before{content:"";width:6px;height:6px;border-radius:50%;background:#c99b45}
 .page-shop .section-head>p,.page-categories .section-head>p{max-width:300px;margin:0 0 3px}
 @media(max-width:620px){.page-shop .section-head,.page-categories .section-head{display:block}.page-shop .section-head>p,.page-categories .section-head>p{margin-top:14px}}
+
+
+/* Clean, editorial dropdowns: fewer visual elements, generous breathing room */
+.main-nav .nav-menu{
+  width:248px;
+  padding:10px;
+  top:calc(100% + 13px);
+  border:1px solid #e8e8df;
+  border-radius:16px;
+  background:rgba(255,254,250,.98);
+  box-shadow:0 18px 48px rgba(24,60,45,.14),0 2px 8px rgba(24,60,45,.04);
+  backdrop-filter:blur(12px);
+}
+.main-nav .nav-menu:after{
+  content:"";
+  display:block;
+  position:absolute;
+  top:-5px;
+  left:27px;
+  width:9px;
+  height:9px;
+  background:#fffefa;
+  border-left:1px solid #e8e8df;
+  border-top:1px solid #e8e8df;
+  transform:rotate(45deg);
+}
+.main-nav .nav-menu:before{top:-14px;height:14px}
+.main-nav .nav-menu a{
+  position:relative;
+  z-index:1;
+  min-height:49px;
+  padding:14px 13px;
+  border-radius:10px;
+  gap:0;
+}
+.main-nav .nav-menu a + a{border-top:1px solid #efefe8;border-top-left-radius:0;border-top-right-radius:0}
+.main-nav .nav-menu a:hover{background:#f3f5ed;transform:none}
+.main-nav .menu-icon{display:none}
+.main-nav .nav-menu a>span:last-child{display:block;width:100%}
+.main-nav .nav-menu b{display:block;font-size:.82rem;line-height:1.35;font-weight:650;letter-spacing:-.01em}
+.main-nav .nav-menu small{display:none}
+.main-nav .nav-menu a:after{
+  content:"↗";
+  position:absolute;
+  right:13px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#a98743;
+  font-size:.9rem;
+  opacity:.7;
+  transition:transform .18s ease,opacity .18s ease;
+}
+.main-nav .nav-menu a:hover:after{transform:translate(2px,-50%);opacity:1}
+.main-nav .nav-dropdown>summary{padding:10px 1px}
+.main-nav .nav-dropdown[open]>summary{color:#8c6a2b}
+.main-nav .nav-chevron{font-size:.85rem;margin-left:1px}
+@media(max-width:760px){
+  .main-nav .nav-menu{top:calc(100% + 7px);width:min(248px,84vw);padding:8px}
+  .main-nav .nav-menu a{min-height:46px;padding:12px}
+  .main-nav .nav-menu:after{left:20px}
+}
+@media(max-width:420px){
+  .main-nav .nav-menu{width:min(238px,86vw)}
+}
