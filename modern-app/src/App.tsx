@@ -51,9 +51,21 @@ export default function App() {
   const [affiliateQuery, setAffiliateQuery] = useState("");
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => { setSession(data.session); setChecking(false); });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, next) => setSession(next));
-    return () => listener.subscription.unsubscribe();
+    let active = true;
+    let authEventReceived = false;
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, next) => {
+      authEventReceived = true;
+      if (active) { setSession(next); setChecking(false); }
+    });
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!active || authEventReceived) return;
+      if (error) setLoginError("Could not check your saved sign-in session. Please sign in again.");
+      setSession(data.session);
+      setChecking(false);
+    }).catch(() => {
+      if (active && !authEventReceived) { setSession(null); setChecking(false); setLoginError("Could not check your saved sign-in session. Please sign in again."); }
+    });
+    return () => { active = false; listener.subscription.unsubscribe(); };
   }, []);
 
   async function api(body: Record<string, unknown>) {
