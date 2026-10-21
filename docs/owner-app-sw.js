@@ -1,4 +1,4 @@
-const CACHE_NAME = "ecuisine-owner-shell-v1";
+const CACHE_NAME = "ecuisine-owner-shell-v2";
 const SHELL = [
   "./admin.html",
   "./admin.js",
