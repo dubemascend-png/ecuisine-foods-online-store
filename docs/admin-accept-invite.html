@@ -29,7 +29,7 @@
  let ready=false;
  async function checkInvite(){
    try {
-     const {data,error}=await sb.auth.getSession(); if(error) throw error;
+     const code=new URLSearchParams(location.search).get("code");\n     if(code){const exchanged=await sb.auth.exchangeCodeForSession(code);if(exchanged.error)throw exchanged.error;history.replaceState({},document.title,location.pathname);}\n     const {data,error}=await sb.auth.getSession(); if(error) throw error;
      if(data.session?.user){email.value=data.session.user.email||"";email.readOnly=true;ready=true;save.disabled=false;status.textContent="Invitation verified. Create your password below.";return;}
      status.textContent="No active invitation was found. Open the latest invitation email on this device, or ask the owner to send a new invitation.";
    } catch(e){status.textContent=e?.message||"Could not verify this invitation. Please open the latest invitation email again.";}
